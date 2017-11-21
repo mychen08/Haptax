@@ -9,14 +9,18 @@
 int bluetoothTx = 2;
 int bluetoothRx = 3;
 
-// to display the potentiometer voltage converted into a string of charcters
 
-String Number_in_string;
+// store voltages from thumb and index pressure sensors
 
-// to store pot voltage as the output of the A/D conversion and as a voltage between 0 and 5 V
+int pressureThumb = 0;
+float pressureThumbVolt = 0.0;
 
-int pot = 0;
-float pot_voltage = 0.0;
+int pressureIndex = 0;
+float pressureIndexVolt = 0.0;
+
+// Declare string
+String thumbVoltStr;
+String indexVoltStr;
 
 // indicates that pin 2 of the Arduino is connected to the Tx pin of the bluetooth unit and pin 3 is connected to the Rx pin of the bluetooth unit
 
@@ -30,35 +34,59 @@ Serial.begin(9600);
 
 // Setup Bluetooth serial connection by programming the unit to communicate at 9600 bauds
 
-bluetooth.begin(115200);
-bluetooth.print("$$$");
-delay(100);
-bluetooth.println("U,9600,N");
-bluetooth.begin(9600);
+  bluetooth.begin(115200);
+  bluetooth.print("$");
+  bluetooth.print("$");
+  bluetooth.print("$");
+  delay(100);
+  bluetooth.println("U,9600,N");
+  bluetooth.begin(9600);
 
 }
 
 void loop() {
 
+/*
+  if(bluetooth.available())  // If the bluetooth sent any characters
+  {
+    // Send any characters the bluetooth prints to the serial monitor
+    Serial.print((char)bluetooth.read());  
+  }
+  if(Serial.available())  // If stuff was typed in the serial monitor
+  {
+    // Send any characters the Serial monitor prints to the bluetooth
+    bluetooth.print((char)Serial.read());
+  }
+  // and loop forever and ever!
+*/
 
-  // read the pot voltage from pin A0 and convert into a voltage
-  pot = analogRead(A0);
-  pot_voltage = float(pot)*5.0/1023.0;
 
-  // convert the pot voltage into a string
 
-  Number_in_string = String(pot_voltage);
+
+  // Read pressure sensor voltages
+  // Thumb = A0
+  // Index = A1
+  
+  pressureThumb = analogRead(A0);
+  pressureThumbVolt = float(pressureThumb)*3.0/1023.0;
+  thumbVoltStr = String(pressureThumbVolt);
+
+  pressureIndex = analogRead(A1);
+  pressureIndexVolt = float(pressureIndex)*5.0/1023.0;
+  indexVoltStr = String(pressureIndexVolt);
 
   // transmit the string to the bluetooth unit
 
-  bluetooth.println(Number_in_string);
+  bluetooth.println(thumbVoltStr);
+  bluetooth.println(indexVoltStr);
 
   // display the string on the serial monitor
 
-  Serial.println(Number_in_string);
+  Serial.println(thumbVoltStr);
+  // Serial.println(indexVoltStr);
 
   // small delay between data transmissions
 
-  delay(20);
+  delay(100);
 
 }
