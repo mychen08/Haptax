@@ -86,7 +86,7 @@ void loop() {
   // map it to the range of the analog out:
   outputValue = map(sensorValue, 0, 1023, 0, 255);
   // change the analog out value:
-  if(outputValue < 170)
+  if(sensorValue < 3)
     analogWrite(analogOutPin, outputValue);
 
   // print the results to the serial monitor:
@@ -106,7 +106,8 @@ void loop() {
   // transmit the string to the bluetooth unit
 
   bluetooth.println(thumbVoltStr);
-  bluetooth.println(indexVoltStr);
+  bluetooth.println("\t");
+  bluetooth.println(indexVoltStr + "\r\n");
 
   // display the string on the serial monitor
 
