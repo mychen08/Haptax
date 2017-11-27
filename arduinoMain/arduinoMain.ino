@@ -49,9 +49,7 @@ Serial.begin(9600);
   HMD.Library(7); //change to 6 for LRA motors 
   
   bluetooth.begin(115200);
-  bluetooth.print("$");
-  bluetooth.print("$");
-  bluetooth.print("$");
+  bluetooth.print("$$$");
   delay(100);
   bluetooth.println("U,9600,N");
   bluetooth.begin(9600);
@@ -81,22 +79,17 @@ void loop() {
   // Thumb = A0
   // Index = A1
 
-   // read the analog in value:
-  sensorValue = analogRead(analogInPin);
-  // map it to the range of the analog out:
-  outputValue = map(sensorValue, 0, 1023, 0, 255);
-  // change the analog out value:
-  if(sensorValue < 3)
-    analogWrite(analogOutPin, outputValue);
+
+
 
   // print the results to the serial monitor:
-  Serial.print("sensor = ");
-  Serial.print(sensorValue);
-  Serial.print("\t output = ");
-  Serial.println(outputValue);
+//  Serial.print("sensor = ");
+//  Serial.print(sensorValue);
+//  Serial.print("\t output = ");
+//  Serial.println(outputValue);
   
   pressureThumb = analogRead(A0);
-  pressureThumbVolt = float(pressureThumb)*3.0/1023.0;
+  pressureThumbVolt = float(pressureThumb)*5.0/1023.0;
   thumbVoltStr = String(pressureThumbVolt);
 
   pressureIndex = analogRead(A1);
@@ -105,13 +98,24 @@ void loop() {
 
   // transmit the string to the bluetooth unit
 
-  bluetooth.println(thumbVoltStr);
-  bluetooth.println("\t");
-  bluetooth.println(indexVoltStr + "\r\n");
+  bluetooth.println(thumbVoltStr + "\t" + indexVoltStr + "\r\n");
+//  bluetooth.println("\t");
+//  bluetooth.println(indexVoltStr + "\r\n");
+//  bluetooth.println(pressureThumb + "\t" + pressureIndex);
+//  Serial.println(thumbVoltStr + "\t" + indexVoltStr + "\r\n");
+//  Serial.println(String(pressureThumb));
+  
+
+  sensorValue = bluetooth.read();
+  // map it to the range of the analog out:
+  outputValue = map(sensorValue, 0, 1023, 0, 255);
+  // change the analog out value:
+  analogWrite(analogOutPin, outputValue);
+  Serial.println(bluetooth.read());
 
   // display the string on the serial monitor
 
-  Serial.println(thumbVoltStr);
+  // Serial.println(thumbVoltStr);
   // Serial.println(indexVoltStr);
 
   // small delay between data transmissions
