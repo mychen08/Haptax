@@ -10,7 +10,7 @@ int bluetoothTx = 2;
 int bluetoothRx = 3;
 
 int sensorValue = 0;        // value read from the sensor
-int outputValue = 0;        // value output to the PWM (analog out)
+double outputValue = 0;        // value output to the PWM (analog out)
 
 
 // store voltages from thumb and index pressure sensors
@@ -24,6 +24,8 @@ float pressureIndexVolt = 0.0;
 // Declare string
 String thumbVoltStr;
 String indexVoltStr;
+
+int incomingByte = 0; 
 
 // indicates that pin 2 of the Arduino is connected to the Tx pin of the bluetooth unit and pin 3 is connected to the Rx pin of the bluetooth unit
 
@@ -63,13 +65,14 @@ void loop() {
 
   bluetooth.println(thumbVoltStr + "," + indexVoltStr);
 
-  
+  delay(1);
 
-  sensorValue = bluetooth.read();                               // Read in Bluetooth
-  outputValue = map(sensorValue, 0, 1023, 0, 255);              // Map read values to 255
-  analogWrite(analogOutPin, outputValue);                       // Write the mapped value to the out pin 9
-  Serial.println(bluetooth.read());
-
+  if (bluetooth.available()) {
+    sensorValue = bluetooth.read();                               // Read in Bluetooth
+    // outputValue = map(sensorValue, 0, 1023, 0, 255);              // Map read values to 255
+    analogWrite(analogOutPin, sensorValue);                       // Write the mapped value to the out pin 9
+    Serial.println(sensorValue);
+  }
   // display the string on the serial monitor
 
   // Serial.println(thumbVoltStr);
