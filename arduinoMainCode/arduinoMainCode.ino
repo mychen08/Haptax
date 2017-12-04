@@ -1,4 +1,4 @@
-// Use the library Softwareserial to use pins 2 and 3 of the arduino for serial comunication with the bluetooth unit
+// Use the library Softwareserial to use pins 2 and 3 of the arduino for serial communication with the Bluetooth unit
 // pins 0 and 1 are not use to be able to lead the program and read the program output on the Arduino serial monitor
 
 #include<SoftwareSerial.h>
@@ -53,23 +53,23 @@ void loop() {
   // Index = A1
 
   
-  pressureThumb = analogRead(A0);
-  pressureThumbVolt = float(pressureThumb)*5.0/1023.0;
-  thumbVoltStr = String(pressureThumbVolt);
+  pressureThumb = analogRead(A0);   // Read in pin A0
+  pressureThumbVolt = float(pressureThumb)*5.0/1023.0;  // Rescale the inputted data
+  thumbVoltStr = String(pressureThumbVolt);   // Typecast the float as a string for printing
 
-  pressureIndex = analogRead(A1);
-  pressureIndexVolt = float(pressureIndex)*5.0/1023.0;
-  indexVoltStr = String(pressureIndexVolt);
+//  Index finger sensor code. Can be uncommented to be implemented with a second sensor
+//  pressureIndex = analogRead(A1);
+//  pressureIndexVolt = float(pressureIndex)*5.0/1023.0;
+//  indexVoltStr = String(pressureIndexVolt);
 
   // transmit the string to the bluetooth unit
 
   bluetooth.println(thumbVoltStr + "," + indexVoltStr);
 
   if (bluetooth.available()) {
-    sensorValue = bluetooth.read();                               // Read in Bluetooth
-    // outputValue = map(sensorValue, 0, 1023, 0, 255);              // Map read values to 255
-    analogWrite(analogOutPin, sensorValue);                       // Write the mapped value to the out pin 9
-    Serial.println(sensorValue);
+    sensorValue = bluetooth.read();   // Read in Bluetooth
+    analogWrite(analogOutPin, sensorValue);   // Write the mapped value to the out pin 9
+    Serial.println(sensorValue);  // Print out the value to serial monitor
   }
   // display the string on the serial monitor
 
